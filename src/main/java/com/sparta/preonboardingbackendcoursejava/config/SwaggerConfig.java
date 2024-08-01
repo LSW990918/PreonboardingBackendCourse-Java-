@@ -22,7 +22,7 @@ public class SwaggerConfig {
                                 "Bearer Authentication",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer") // Use "bearer" for the scheme
+                                        .scheme("bearer")
                                         .bearerFormat("JWT")
                                         .in(SecurityScheme.In.HEADER)
                                         .name("Authorization")

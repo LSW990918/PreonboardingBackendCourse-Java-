@@ -24,16 +24,14 @@ configurations {
 }
 
 dependencies {
+    implementation "io.jsonwebtoken:jjwt:0.9.1"
+
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('org.springframework.boot:spring-boot-starter-security')
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 
     implementation("org.springframework.data:spring-data-envers")
-
-    implementation('io.jsonwebtoken:jjwt-api:0.15.0') // 최신 버전으로 업데이트
-    runtimeOnly('io.jsonwebtoken:jjwt-impl:0.15.0')
-    runtimeOnly('io.jsonwebtoken:jjwt-jackson:0.15.0')
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
@@ -45,6 +43,9 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation 'com.auth0:java-jwt:3.18.2'
+    implementation 'io.vavr:vavr:0.10.4'
 }
 
 tasks.named('test') {

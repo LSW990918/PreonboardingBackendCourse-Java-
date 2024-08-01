@@ -1,15 +1,16 @@
 package com.sparta.preonboardingbackendcoursejava.infra.security.jwt;
 
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 
 @Component
@@ -19,6 +20,9 @@ public class JwtPlugin {
     private final String secretKey;
     private final long accessTokenExpirationHour;
 
+    private final Algorithm algorithm;
+    private final JWTVerifier verifier;
+
     public JwtPlugin(
             @Value("${auth.jwt.issuer}") String issuer,
             @Value("${auth.jwt.secretKey}") String secretKey,
@@ -26,18 +30,12 @@ public class JwtPlugin {
         this.issuer = issuer;
         this.secretKey = secretKey;
         this.accessTokenExpirationHour = accessTokenExpirationHour;
+        this.algorithm = Algorithm.HMAC256(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.verifier = JWT.require(algorithm).withIssuer(issuer).build();
     }
 
-    public Jws<Claims> validateToken(String jwt) {
-        try {
-            byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
-            return Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(keyBytes))
-                    .build()
-                    .parseClaimsJws(jwt);
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid JWT token", e);
-        }
+    public Try<DecodedJWT> validateToken(String jwt) {
+        return Try.of(() -> verifier.verify(jwt));
     }
 
     public String generateAccessToken(String subject, String nickname) {
@@ -45,16 +43,12 @@ public class JwtPlugin {
     }
 
     private String generateToken(String subject, String nickname, Duration expiration) {
-        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
-        Claims claims = Jwts.claims().setSubject(subject);
-        claims.put("nickname", nickname);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuer(issuer)
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(java.time.Instant.now().plus(expiration)))
-                .signWith(Keys.hmacShaKeyFor(keyBytes))
-                .compact();
+        return JWT.create()
+                .withSubject(subject)
+                .withClaim("nickname", nickname)
+                .withIssuer(issuer)
+                .withIssuedAt(new Date())
+                .withExpiresAt(Date.from(Instant.now().plus(expiration)))
+                .sign(algorithm);
     }
 }
