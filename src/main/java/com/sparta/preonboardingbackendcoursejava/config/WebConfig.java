@@ -39,16 +39,16 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600);
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/**").setViewName("forward:/index.html");
-    }
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addViewController("/**").setViewName("forward:/index.html");
+//    }
 
-    @Bean
-    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> containerCustomizer() {
-        return container -> container.addErrorPages(
-                new ErrorPage(HttpStatus.NOT_FOUND, "/not-found")
-        );
-    }
+//    @Bean
+//    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> containerCustomizer() {
+//        return container -> container.addErrorPages(
+//                new ErrorPage(HttpStatus.NOT_FOUND, "/not-found")
+//        );
+//    }
 }
 
