@@ -22,9 +22,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/META-INF/resources/")
-                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS)); // Adjust cache settings as needed
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
 
-        // Optionally configure a specific handler for index.html if needed
         registry.addResourceHandler("/index.html")
                 .addResourceLocations("classpath:/META-INF/resources/")
                 .setCacheControl(CacheControl.noStore())
@@ -42,7 +41,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // Serve index.html for all paths that don't match static resources
         registry.addViewController("/**").setViewName("forward:/index.html");
     }
 
