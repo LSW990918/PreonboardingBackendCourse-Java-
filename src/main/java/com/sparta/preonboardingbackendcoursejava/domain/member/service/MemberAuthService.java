@@ -8,6 +8,7 @@ import com.sparta.preonboardingbackendcoursejava.domain.member.dto.MemberSigninR
 import com.sparta.preonboardingbackendcoursejava.domain.member.dto.MemberSignupRequest;
 import com.sparta.preonboardingbackendcoursejava.domain.member.dto.SigninResponse;
 import com.sparta.preonboardingbackendcoursejava.domain.member.model.MemberEntity;
+import com.sparta.preonboardingbackendcoursejava.domain.member.model.MemberRole;
 import com.sparta.preonboardingbackendcoursejava.domain.member.repository.MemberRepository;
 import com.sparta.preonboardingbackendcoursejava.infra.security.jwt.JwtPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class MemberAuthService {
     }
 
     @Transactional
-    public MemberResponse signup(MemberSignupRequest memberSignupRequest) {
+    public MemberResponse signup(MemberSignupRequest memberSignupRequest, MemberRole memberRole) {
         if (memberRepository.existsByEmail(memberSignupRequest.getEmail())) {
             throw new MemberDuplicateException(ErrorCode.MEMBER_EMAIL_DUPLICATE);
         }
@@ -44,7 +45,8 @@ public class MemberAuthService {
         MemberEntity member = memberRepository.save(new MemberEntity(
                 memberSignupRequest.getEmail(),
                 passwordEncoder.encode(memberSignupRequest.getPassword()),
-                memberSignupRequest.getNickname()
+                memberSignupRequest.getNickname(),
+                memberRole
         ));
         return member.toResponse();
     }

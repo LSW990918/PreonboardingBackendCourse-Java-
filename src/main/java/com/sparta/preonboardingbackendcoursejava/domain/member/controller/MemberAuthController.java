@@ -4,15 +4,13 @@ import com.sparta.preonboardingbackendcoursejava.domain.member.dto.MemberRespons
 import com.sparta.preonboardingbackendcoursejava.domain.member.dto.MemberSigninRequest;
 import com.sparta.preonboardingbackendcoursejava.domain.member.dto.MemberSignupRequest;
 import com.sparta.preonboardingbackendcoursejava.domain.member.dto.SigninResponse;
+import com.sparta.preonboardingbackendcoursejava.domain.member.model.MemberRole;
 import com.sparta.preonboardingbackendcoursejava.domain.member.service.MemberAuthService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,8 +23,10 @@ public class MemberAuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<MemberResponse> signup(@RequestBody MemberSignupRequest memberSignupRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(memberSignupRequest));
+    public ResponseEntity<MemberResponse> signup(
+            @RequestParam MemberRole memberRole,
+            @RequestBody MemberSignupRequest memberSignupRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(memberSignupRequest, memberRole));
     }
 
     @PostMapping("/signin")
