@@ -21,13 +21,17 @@ public class MemberEntity {
     @Column(name = "nickname")
     private String nickname;
 
+    @Column(name = "role")
+    private MemberRole role;
+
     public MemberEntity() {
     }
 
-    public MemberEntity(String email, String password, String nickname) {
+    public MemberEntity(String email, String password, String nickname, MemberRole memberRole) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.role = memberRole;
     }
 
     public Long getId() {
@@ -62,8 +66,13 @@ public class MemberEntity {
         this.nickname = nickname;
     }
 
+    public MemberRole getRole() { return role; }
+
+    public  void setRole(MemberRole role) { this.role = role; }
+
     public MemberResponse toResponse() {
-        return new MemberResponse(email, nickname);
+        return new MemberResponse(email, nickname, role
+        );
     }
 }
 
